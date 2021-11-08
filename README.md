@@ -2,11 +2,13 @@
 github加速神器，解决github打不开、用户头像无法加载、releases无法上传下载、git-clone、git-pull、git-push失败等问题。
 
 ### 1 程序下载
-如果不能下载[releases](https://github.com/dotnetcore/fastgithub/releases)里发布的程序，可以到Q群[307306673](https://qm.qq.com/cgi-bin/qm/qr?k=cx_MgEIvoo1EMkrKg5tXz8vMdtPap3Rw&jump_from=webapi)里面的群文件下载。
-
+* [github-release](https://github.com/dotnetcore/fastgithub/releases)
+* Q群1 [307306673](https://qm.qq.com/cgi-bin/qm/qr?k=cx_MgEIvoo1EMkrKg5tXz8vMdtPap3Rw&jump_from=webapi) [已满]
+* Q群2 [742376932](https://qm.qq.com/cgi-bin/qm/qr?k=6BBJ1nrJwe1o1E4-NJfwSOP-C4sMGc4q&jump_from=webapi)
+  
 ### 2 部署方式
 #### 2.1 windows-x64
-* 双击运行fastgithub.exe程序
+* 双击运行FastGithub.UI.exe
 * `fastgithub.exe start` // 以windows服务安装并启动
 * `fastgithub.exe stop` // 以windows服务卸载并删除
 
@@ -16,34 +18,21 @@ github加速神器，解决github打不开、用户头像无法加载、releases
 * 设置系统自动代理为`http://127.0.0.1:38457`，或手动代理http/https为`127.0.0.1:38457`
 
 #### 2.3 macOS-x64
-* 双击运行fastgithub程序
+* 双击运行fastgithub
 * 安装cacert/fastgithub.cer并设置信任
 * 设置系统自动代理为`http://127.0.0.1:38457`，或手动代理http/https为`127.0.0.1:38457`
 * [具体配置详情](https://github.com/dotnetcore/FastGithub/blob/master/MacOSXConfig.md)
-
+ 
 #### 2.4 docker-compose一键部署
 * 准备好docker 18.09, docker-compose.
 * 在源码目录下，有一个docker-compose.yaml 文件，专用于在实际项目中，临时使用github.com源码，而做的demo配置。
 * 根据自己的需要更新docker-compose.yaml中的sample和build镜像即可完成拉github.com源码加速，并基于源码做后续的操作。
-
-### 3 加速原理
-#### 3.1 windows
-1. 客户端访问`https://github.com`
-2. 客户端向dns查询github.com的ip，FastGithub拦截dns数据包并伪造解析结果为127.0.0.1
-3. 客户端请求到FastGithub的`https://127.0.0.1:443`
-4. FastGithub使用fastgithub.cer颁发服务器证书给客户端
-5. FastGithub查询和计算github.com最快的ip
-6. FastGithub与github.com进行无sni的tls连接
-7. FastGithub将请求反向代理到`https://github.com`
-
-#### 3.2 linux/osx
-1. 客户端访问`https://github.com`
-2. 客户端使用fagithub的代理端口38457代理请求
-3. FastGithub将代理的流量请求到自身的反向代理服务
-4. FastGithub使用fastgithub.cer颁发服务器证书给客户端
-5. FastGithub查询和计算github.com最快的ip
-6. FastGithub与github.com进行无sni的tls连接
-7. FastGithub将请求反向代理到`https://github.com`
+ 
+### 3 软件功能 
+* 提供域名的纯净IP解析；
+* 提供IP测速并选择最快的IP；
+* 提供域名的tls连接自定义配置；
+* google的CDN资源替换，解决大量国外网站无法加载js和css的问题；
   
 ### 4 证书验证
 #### 4.1 git

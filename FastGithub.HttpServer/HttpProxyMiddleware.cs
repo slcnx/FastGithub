@@ -88,8 +88,12 @@ namespace FastGithub.HttpServer
                 using var targetSocket = new Socket(SocketType.Stream, ProtocolType.Tcp);
                 await targetSocket.ConnectAsync(endpoint);
 
+                var responseFeature = context.Features.Get<IHttpResponseFeature>();
+                if (responseFeature != null)
+                {
+                    responseFeature.ReasonPhrase = "Connection Established";
+                }
                 context.Response.StatusCode = StatusCodes.Status200OK;
-                context.Features.Get<IHttpResponseFeature>().ReasonPhrase = "Connection Established";
                 await context.Response.CompleteAsync();
 
                 var transport = context.Features.Get<IConnectionTransportFeature>()?.Transport;
@@ -101,10 +105,10 @@ namespace FastGithub.HttpServer
             }
             else
             {
-                await this.httpReverseProxy.InvokeAsync(context, async ctx =>
+                await this.httpReverseProxy.InvokeAsync(context, async next =>
                 {
-                    var destinationPrefix = $"{ctx.Request.Scheme}://{ctx.Request.Host}";
-                    await this.httpForwarder.SendAsync(ctx, destinationPrefix, this.defaultHttpClient);
+                    var destinationPrefix = $"{context.Request.Scheme}://{context.Request.Host}";
+                    await this.httpForwarder.SendAsync(context, destinationPrefix, this.defaultHttpClient);
                 });
             }
         }
@@ -144,7 +148,7 @@ namespace FastGithub.HttpServer
         /// <param name="host"></param>
         /// <returns></returns>
         private async Task<EndPoint> GetTargetEndPointAsync(HostString host)
-        { 
+        {
             var targetHost = host.Host;
             var targetPort = host.Port ?? HTTPS_PORT;
 
